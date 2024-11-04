@@ -1,4 +1,4 @@
-package com.example;
+package it.itsincom.webdev2024;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
