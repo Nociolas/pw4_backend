@@ -1,6 +1,8 @@
 package it.itsincom.webdev2024.persistence.repository;
 
 import it.itsincom.webdev2024.persistence.model.Prodotto;
+import it.itsincom.webdev2024.persistence.model.Ruolo;
+import it.itsincom.webdev2024.persistence.model.Utente;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import javax.sql.DataSource;
@@ -8,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class ProdottoRepository {
@@ -64,22 +68,27 @@ public class ProdottoRepository {
         return prodotto;
     }
 
-    public Prodotto updateProdotto(Prodotto prodotto) {
+    public List<Prodotto> getAllProdotti() {
+        List<Prodotto> listaProdotti = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE prodotto SET nome_prodotto = ?, descrizione = ?, prezzo = ?, id_categoria = ?, immagine = ? WHERE id_prodotto = ?")) {
-                statement.setString(1, prodotto.getNome());
-                statement.setString(2, prodotto.getDescrizione());
-                statement.setDouble(3, prodotto.getPrezzo());
-                statement.setInt(4, prodotto.getIdCategoria());
-                statement.setString(5, prodotto.getImmagine());
-                statement.setInt(6, prodotto.getId());
-                statement.executeUpdate();
+                    "SELECT id_prodotto, nome_prodotto, descrizione, prezzo, id_categoria, immagine  FROM prodotto")) {
+                var resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    var prodotto = new Prodotto();
+                    prodotto.setId(resultSet.getInt("id_prodotto"));
+                    prodotto.setNome(resultSet.getString("nome_utente"));
+                    prodotto.setDescrizione(resultSet.getString("email"));
+                    prodotto.setPrezzo(resultSet.getDouble("prezzo"));
+                    prodotto.setImmagine(resultSet.getString("immagine"));
+                    prodotto.setIdCategoria(resultSet.getInt("id_categoria"));
+                    listaProdotti.add(prodotto);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return prodotto;
+        return listaProdotti;
     }
 
     public void deleteProdotto(int id) {
