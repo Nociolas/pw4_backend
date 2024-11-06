@@ -11,6 +11,7 @@ public class Utente {
     private Date dataRegistrazione;
     private Ruolo ruolo;
     private Boolean verificato;
+    private String codiceVerifica;
 
     public int getId() {
         return id;
@@ -74,5 +75,13 @@ public class Utente {
 
     public void setVerificato(Boolean verificato) {
         this.verificato = verificato;
+    }
+
+    public String getCodiceVerifica() {
+        return codiceVerifica;
+    }
+
+    public void setCodiceVerifica(String codiceVerifica) {
+        this.codiceVerifica = codiceVerifica;
     }
 }

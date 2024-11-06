@@ -2,6 +2,7 @@ package it.itsincom.webdev2024.rest;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
+import it.itsincom.webdev2024.persistence.repository.UtenteRepository;
 import it.itsincom.webdev2024.rest.model.CreateProfileResponse;
 import it.itsincom.webdev2024.rest.model.CreateUtenteRequest;
 import it.itsincom.webdev2024.rest.model.CreateUtenteResponse;
@@ -16,6 +17,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 
+import java.util.Random;
+
 @Path("/api/auth")
 public class AuthenticationResource {
 
@@ -24,10 +27,12 @@ public class AuthenticationResource {
 
     private final AuthenticationService authenticationService;
     private final UtenteService utenteService;
+    private final UtenteRepository utenteRepository;
 
-    public AuthenticationResource(AuthenticationService authenticationService, UtenteService utenteService) {
+    public AuthenticationResource(AuthenticationService authenticationService, UtenteService utenteService, UtenteRepository utenteRepository) {
         this.authenticationService = authenticationService;
         this.utenteService = utenteService;
+        this.utenteRepository = utenteRepository;
     }
 
     @POST
@@ -35,8 +40,27 @@ public class AuthenticationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CreateUtenteResponse register(CreateUtenteRequest request) {
-        mailer.send(Mail.withText("mossalimattia@gmail.com", "A simple gay from quarkus", "This is your body and i like it"));;
-        return utenteService.createUtente(request);
+        CreateUtenteResponse response = utenteService.createUtente(request);
+        String verificationCode = utenteRepository.generateVerificationCode();
+        utenteRepository.saveVerificationCode(response.getId(), verificationCode);
+        mailer.send(Mail.withText("mossalimattia@gmail.com", "Verification Code", "Your verification code is: " + verificationCode));
+        return response;
+    }
+
+    @POST
+    @Path("/verify")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response verifyCode(JsonObject verifyRequest) {
+        int userId = verifyRequest.getInt("id");
+        String code = verifyRequest.getString("codiceVerifica");
+
+        boolean isVerified = utenteService.verifyCode(userId, code);
+        if (isVerified) {
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid verification code").build();
+        }
     }
 
     @POST

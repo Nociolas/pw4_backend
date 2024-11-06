@@ -9,10 +9,8 @@ import jakarta.ws.rs.BadRequestException;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class UtenteRepository {
@@ -52,6 +50,62 @@ public class UtenteRepository {
             throw new RuntimeException(e);
         }
         return utente;
+    }
+
+    public boolean checkDouble(String email) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM utente WHERE email = ?")) {
+                statement.setString(1, email);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    public String generateVerificationCode() {
+        return String.valueOf(new Random().nextInt(999999));
+    }
+
+    public void saveVerificationCode(int userId, String verificationCode) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE utente SET codice_verifica = ? WHERE id_utente = ?")) {
+                statement.setString(1, verificationCode);
+                statement.setInt(2, userId);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean verifyCode(int userId, String code) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "SELECT COUNT(*) FROM utente WHERE id_utente = ? AND codice_verifica = ?")) {
+                statement.setInt(1, userId);
+                statement.setString(2, code);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    // Update the verification status
+                    try (PreparedStatement updateStatement = connection.prepareStatement(
+                            "UPDATE utente SET verificato = TRUE WHERE id_utente = ?")) {
+                        updateStatement.setInt(1, userId);
+                        updateStatement.executeUpdate();
+                    }
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
     }
 
     public Optional<Utente> findUtenteByEmailPasswordHash(String email, String passwordHash) {
@@ -148,19 +202,6 @@ public class UtenteRepository {
         return res;
     }
 
-    public boolean checkDouble(String email) {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM utente WHERE email = ?")) {
-                statement.setString(1, email);
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    int count = resultSet.getInt(1);
-                    return count > 0;
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
-    }
+
+
 }

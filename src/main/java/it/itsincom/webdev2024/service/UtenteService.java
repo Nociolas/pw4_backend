@@ -54,6 +54,10 @@ public class UtenteService {
         return response;
     }
 
+    public boolean verifyCode(int userId, String code) {
+        return utenteRepository.verifyCode(userId, code);
+    }
+
     // OTTIENE LA LISTA DEGLI UTENTI CON RELATIVO INDIRIZZO
     public List<CreateProfileResponse> getAllUtenti() throws SQLException {
         List<CreateProfileResponse> responses = new ArrayList<>();
