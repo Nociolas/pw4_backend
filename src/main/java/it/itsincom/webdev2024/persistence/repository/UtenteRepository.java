@@ -3,7 +3,6 @@ package it.itsincom.webdev2024.persistence.repository;
 import it.itsincom.webdev2024.persistence.model.Ruolo;
 import it.itsincom.webdev2024.persistence.model.Utente;
 import it.itsincom.webdev2024.rest.model.CreateProfileResponse;
-import it.itsincom.webdev2024.service.HashCalculator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.BadRequestException;
 

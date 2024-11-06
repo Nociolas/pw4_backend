@@ -1,8 +1,6 @@
 package it.itsincom.webdev2024.rest;
 
-
 import it.itsincom.webdev2024.persistence.model.Ruolo;
-import it.itsincom.webdev2024.persistence.repository.SessionRepository;
 import it.itsincom.webdev2024.persistence.repository.UtenteRepository;
 import it.itsincom.webdev2024.rest.model.*;
 import it.itsincom.webdev2024.service.AuthenticationService;
@@ -29,7 +27,8 @@ public class UtenteResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<CreateProfileResponse> getAllUtenti(@CookieParam("SESSION_COOKIE") @DefaultValue("-1") int sessionId) throws SQLException {
+    public List<CreateProfileResponse> getAllUtenti
+            (@CookieParam("SESSION_COOKIE") @DefaultValue("-1") int sessionId) throws SQLException {
         CreateProfileResponse profile = authenticationService.getProfile(sessionId);
         if (profile == null || profile.getRuolo() != Ruolo.amministratore) {
             throw new RuntimeException("Non sei autorizzato a visualizzare tutti gli utenti");
@@ -40,7 +39,8 @@ public class UtenteResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public CreateProfileResponse getUtenteById(@CookieParam("SESSION_COOKIE") @DefaultValue("-1") int sessionId, @PathParam("id") int id) {
+    public CreateProfileResponse getUtenteById
+            (@CookieParam("SESSION_COOKIE") @DefaultValue("-1") int sessionId, @PathParam("id") int id) {
         CreateProfileResponse profile = authenticationService.getProfile(sessionId);
         if (profile == null || profile.getRuolo() != Ruolo.amministratore) {
             throw new RuntimeException("Non sei autorizzato a visualizzare un utente");
@@ -51,7 +51,8 @@ public class UtenteResource {
     @GET
     @Path("/find/{nome}")
     @Produces(MediaType.APPLICATION_JSON)
-    public CreateProfileResponse getUtenteByNome(@CookieParam("SESSION_COOKIE") @DefaultValue("-1") int sessionId, @PathParam("nome") String nome) {
+    public CreateProfileResponse getUtenteByNome
+            (@CookieParam("SESSION_COOKIE") @DefaultValue("-1") int sessionId, @PathParam("nome") String nome) {
         CreateProfileResponse profile = authenticationService.getProfile(sessionId);
         if (profile == null || profile.getRuolo() != Ruolo.amministratore) {
             throw new RuntimeException("Non sei autorizzato a cercare un utente");
