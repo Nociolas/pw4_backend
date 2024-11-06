@@ -1,11 +1,16 @@
 package it.itsincom.webdev2024.persistence.model;
 
+import java.util.Date;
+
 public class Utente {
     private int id;
     private String nomeUtente;
     private String email;
     private String telefono;
     private String passwordHash;
+    private Date dataRegistrazione;
+    private Ruolo ruolo;
+    private Boolean verificato;
 
     public int getId() {
         return id;
@@ -47,4 +52,27 @@ public class Utente {
         this.passwordHash = passwordHash;
     }
 
+    public Date getDataRegistrazione() {
+        return dataRegistrazione;
+    }
+
+    public void setDataRegistrazione(Date dataRegistrazione) {
+        this.dataRegistrazione = dataRegistrazione;
+    }
+
+    public Ruolo getRuolo() {
+        return ruolo;
+    }
+
+    public void setRuolo(Ruolo ruolo) {
+        this.ruolo = ruolo;
+    }
+
+    public Boolean getVerificato() {
+        return verificato;
+    }
+
+    public void setVerificato(Boolean verificato) {
+        this.verificato = verificato;
+    }
 }

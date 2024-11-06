@@ -26,12 +26,12 @@ public class Sessione {
         this.dataCreazione = dataCreazione;
     }
 
-    public int getUtente() {
+    public int getUtenteId() {
         return utenteId;
     }
 
-    public void setUtente(int utente) {
-        this.utenteId = utente;
+    public void setUtenteId(int utenteId) {
+        this.utenteId = utenteId;
     }
 
 }
