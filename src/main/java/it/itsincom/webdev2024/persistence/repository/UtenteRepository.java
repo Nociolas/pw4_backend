@@ -108,13 +108,15 @@ public class UtenteRepository {
         return false;
     }
 
-    public Optional<Utente> findUtenteByEmailPasswordHash(String email, String passwordHash) {
+
+    public Optional<Utente> findUtenteByEmailPasswordHash(String email, String passwordHash, Boolean verificato) {
         try (Connection connection = dataSource.getConnection()) {
-            String query = "SELECT id_utente, nome_utente, email, password_hash, ruolo, telefono " +
-                    "FROM utente WHERE email = ? AND password_hash = ?";
+            String query = "SELECT id_utente, nome_utente, email, password_hash, ruolo, telefono, verificato " +
+                    "FROM utente WHERE email = ? AND password_hash = ? AND verificato = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, email);
                 statement.setString(2, passwordHash);
+                statement.setBoolean(3, verificato);
                 ResultSet resultSet = statement.executeQuery();
 
                 if (resultSet.next()) {
@@ -125,6 +127,7 @@ public class UtenteRepository {
                     utente.setPasswordHash(resultSet.getString("password_hash"));
                     utente.setRuolo(Ruolo.valueOf(resultSet.getString("ruolo")));
                     utente.setTelefono(resultSet.getString("telefono"));
+                    utente.setVerificato(resultSet.getBoolean(1));
 
                     return Optional.of(utente);
                 }

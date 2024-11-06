@@ -17,8 +17,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 
-import java.util.Random;
-
 @Path("/api/auth")
 public class AuthenticationResource {
 
@@ -43,7 +41,7 @@ public class AuthenticationResource {
         CreateUtenteResponse response = utenteService.createUtente(request);
         String verificationCode = utenteRepository.generateVerificationCode();
         utenteRepository.saveVerificationCode(response.getId(), verificationCode);
-        mailer.send(Mail.withText("mossalimattia@gmail.com", "Verification Code", "Your verification code is: " + verificationCode));
+        mailer.send(Mail.withText("nicholasoliverio26@gmail.com", "Verification Code", "Your verification code is: " + verificationCode));
         return response;
     }
 
