@@ -10,7 +10,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-
+@Path("/prodotti")
 public class ProdottoResource {
     private final ProdottoService prodottoService;
     private final ProdottoRepository prodottoRepository;
@@ -26,6 +26,15 @@ public class ProdottoResource {
     public Prodotto getProdotto(@PathParam("nome") String nome) {
         return prodottoRepository.getProdotto(nome);
     }
+    @POST
+    @Path("/add")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addProdotto(Prodotto prodotto){
+       prodottoRepository.addProdotto(prodotto);
+       return Response.ok().build();
+    }
+
 
     @DELETE
     @Path("/{id}")
