@@ -5,9 +5,8 @@ public class Prodotto {
     private String nome;
     private String descrizione;
     private double prezzo;
-    private int idCategoria;
     private String immagine;
-
+    private int quantita;
 
     public int getId() {
         return id;
@@ -41,19 +40,19 @@ public class Prodotto {
         this.prezzo = prezzo;
     }
 
-    public int getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(int idCategoria) {
-        this.idCategoria = idCategoria;
-    }
-
     public String getImmagine() {
         return immagine;
     }
 
     public void setImmagine(String immagine) {
         this.immagine = immagine;
+    }
+
+    public int getQuantita() {
+        return quantita;
+    }
+
+    public void setQuantita(int quantita) {
+        this.quantita = quantita;
     }
 }
