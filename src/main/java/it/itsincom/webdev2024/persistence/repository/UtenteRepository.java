@@ -68,8 +68,9 @@ public class UtenteRepository {
     }
 
     public String generateVerificationCode() {
-        return String.valueOf(new Random().nextInt(999999));
+        return String.format("%06d", new Random().nextInt(999999));
     }
+
 
     public void saveVerificationCode(int userId, String verificationCode) {
         try (Connection connection = dataSource.getConnection()) {

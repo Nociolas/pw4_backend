@@ -27,12 +27,7 @@ public class UtenteResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<CreateProfileResponse> getAllUtenti
-            (@CookieParam("SESSION_COOKIE") @DefaultValue("-1") int sessionId) throws SQLException {
-        CreateProfileResponse profile = authenticationService.getProfile(sessionId);
-        if (profile == null || profile.getRuolo() != Ruolo.amministratore) {
-            throw new RuntimeException("Non sei autorizzato a visualizzare tutti gli utenti");
-        }
+    public List<CreateProfileResponse> getAllUtenti() throws SQLException {
         return utenteService.getAllUtenti();
     }
 

@@ -42,8 +42,7 @@ public class AuthenticationService {
             // 3a. Ritornare il codice sessione
             Utente u = maybeUtente.get();
             try {
-                int sessione = sessionRepository.insertSession(u.getId());
-                return sessione;
+                return sessionRepository.insertSession(u.getId());
             } catch (SQLException e) {
                 throw new SessionCreationException(e);
             }

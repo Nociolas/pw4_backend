@@ -41,7 +41,12 @@ public class AuthenticationResource {
         CreateUtenteResponse response = utenteService.createUtente(request);
         String verificationCode = utenteRepository.generateVerificationCode();
         utenteRepository.saveVerificationCode(response.getId(), verificationCode);
-        mailer.send(Mail.withText("nicholasoliverio26@gmail.com", "Verification Code", "Your verification code is: " + verificationCode));
+        String email = request.getEmail();
+        try {
+            mailer.send(Mail.withText(email, "Verification Code", "Your verification code is: " + verificationCode));
+        } catch (Exception e) {
+            System.err.println("Failed to send verification email: " + e.getMessage());
+        }
         return response;
     }
 

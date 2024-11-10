@@ -76,7 +76,7 @@ public class UtenteService {
         res.setEmail(u.getEmail());
         res.setTelefono(u.getTelefono());
         res.setRuolo(u.getRuolo());
-        res.setVerificato(u.getVerificato());
+        res.setVerificato(u.getVerificato() != null ? u.getVerificato() : false);
         return res;
     }
 
