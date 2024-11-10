@@ -23,13 +23,13 @@ public class ProdottoRepository {
         List<Prodotto> listaProdotti = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
-                    "SELECT id_prodotto, nome_prodotto, descrizione, prezzo, id_categoria, immagine, quantita  FROM prodotto")) {
+                    "SELECT id_prodotto, nome_prodotto, descrizione, prezzo, immagine, quantita  FROM prodotto")) {
                 var resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     var prodotto = new Prodotto();
                     prodotto.setId(resultSet.getInt("id_prodotto"));
-                    prodotto.setNome(resultSet.getString("nome_utente"));
-                    prodotto.setDescrizione(resultSet.getString("email"));
+                    prodotto.setNome(resultSet.getString("nome_prodotto"));
+                    prodotto.setDescrizione(resultSet.getString("descrizione"));
                     prodotto.setPrezzo(resultSet.getDouble("prezzo"));
                     prodotto.setImmagine(resultSet.getString("immagine"));
                     prodotto.setQuantita(resultSet.getInt("quantita"));
@@ -90,7 +90,7 @@ public class ProdottoRepository {
         return prodotto;
     }
 
-    public void updateProdotto(Prodotto prodotto) {
+    public Prodotto updateProdotto(Prodotto prodotto) {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
                     "UPDATE prodotto SET nome_prodotto = ?, descrizione = ?, prezzo = ?, quantita = ? WHERE id_prodotto = ?")) {
@@ -104,6 +104,7 @@ public class ProdottoRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return prodotto;
     }
 
     public void deleteProdotto(int id) {

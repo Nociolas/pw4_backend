@@ -7,13 +7,21 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/prodotti")
+import java.util.List;
+
+@Path("/api/prodotti")
 public class ProdottoResource {
 
     private final ProdottoService prodottoService;
 
     public ProdottoResource(ProdottoService prodottoService) {
         this.prodottoService = prodottoService;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Prodotto> getAllProdotti() {
+        return prodottoService.getAllProdotti();
     }
 
     @GET
@@ -28,8 +36,10 @@ public class ProdottoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addProdotto(Prodotto prodotto) {
-        prodottoService.addProdotto(prodotto);
-        return Response.ok().build();
+        Prodotto addedProdotto = prodottoService.addProdotto(prodotto);
+        return Response.status(Response.Status.CREATED)
+                .entity(addedProdotto)
+                .build();
     }
 
     @PUT
@@ -37,15 +47,17 @@ public class ProdottoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateProdotto(Prodotto prodotto) {
-        prodottoService.updateProdotto(prodotto);
-        return Response.ok().build();
+        Prodotto updatedProdotto = prodottoService.updateProdotto(prodotto);
+        return Response.ok(updatedProdotto).build(); // 200 OK with the updated entity
     }
 
     @DELETE
     @Path("/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteProdotto(@PathParam("id") int id) {
         prodottoService.deleteProdotto(id);
-        return Response.ok().build();
+        return Response.ok("Prodotto deleted successfully").build(); // 200 OK with a message
     }
+
 
 }

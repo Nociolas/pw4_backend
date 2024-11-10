@@ -4,6 +4,8 @@ import it.itsincom.webdev2024.persistence.model.Prodotto;
 import it.itsincom.webdev2024.persistence.repository.ProdottoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.List;
+
 @ApplicationScoped
 public class ProdottoService {
 
@@ -13,14 +15,15 @@ public class ProdottoService {
         this.prodottoRepository = prodottoRepository;
     }
 
+    public List<Prodotto> getAllProdotti(){
+        return prodottoRepository.getAllProdotti();
+    }
+
     public Prodotto getProdotto(String nome) {
         return prodottoRepository.getProdotto(nome);
     }
 
     public Prodotto addProdotto(Prodotto prodotto) {
-        if (prodotto.getQuantita() < 1) {
-            prodotto.setQuantita(1);
-        }
         return prodottoRepository.addProdotto(prodotto);
     }
 
@@ -28,8 +31,8 @@ public class ProdottoService {
         prodottoRepository.deleteProdotto(id);
     }
 
-    public void updateProdotto(Prodotto prodotto) {
-        prodottoRepository.updateProdotto(prodotto);
+    public Prodotto updateProdotto(Prodotto prodotto) {
+        return prodottoRepository.updateProdotto(prodotto);
     }
 
 }
