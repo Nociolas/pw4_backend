@@ -89,8 +89,8 @@ public class OrdineService {
     }
 
     // Update order status (e.g., from "in attesa" to "completato")
-    public Ordine updateOrderStatus(ObjectId orderId, String status) {
-        return orderRepository.updateOrderStatus(orderId, status);
+    public Ordine updateOrderStatus(ObjectId orderId) {
+        return orderRepository.updateOrderStatus(orderId);
     }
 
     // Cancel order (delete it from the database)

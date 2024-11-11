@@ -24,11 +24,11 @@ public class OrdineRepository implements PanacheMongoRepositoryBase<Ordine, Obje
     }
 
     // Update order status
-    public Ordine updateOrderStatus(ObjectId orderId, String status) {
+    public Ordine updateOrderStatus(ObjectId orderId) {
         Ordine ordine = findOrderById(orderId);
         if (ordine != null) {
-            ordine.stato = status;
-            persist(ordine);
+            ordine.stato = "accettato";
+            persistOrUpdate(ordine);
         }
         return ordine;
     }

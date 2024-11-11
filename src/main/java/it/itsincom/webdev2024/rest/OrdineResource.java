@@ -40,10 +40,8 @@ public class OrdineResource {
     }
 
     private void sendOrderConfirmationEmail(Ordine createdOrder) {
-        // Get user email
         String email = getUserEmailById(createdOrder.getIdUtente());
 
-        // Create HTML email content
         String emailSubject = "Order Confirmation - Order #" + createdOrder.getId();
         StringBuilder emailBody = new StringBuilder();
 
@@ -54,7 +52,6 @@ public class OrdineResource {
                 .append("<p><strong>Prodotti:</strong></p>")
                 .append("<ul>");
 
-        // Iterate through the products
         for (Prodotto prodotto : createdOrder.getProdotti()) {
             emailBody.append("<li>")
                     .append(prodotto.getNome())
@@ -68,15 +65,12 @@ public class OrdineResource {
                 .append("<p>Bacini,</p>")
                 .append("<p>XOXO</p>");
 
-        // Send the HTML email
         try {
             mailer.send(Mail.withHtml(email, emailSubject, emailBody.toString()));
         } catch (Exception e) {
             System.err.println("Failed to send order confirmation email: " + e.getMessage());
         }
     }
-
-
 
     private String getUserEmailById(int userId) {
         CreateProfileResponse user = utenteService.getUtenteById(userId);
@@ -95,27 +89,5 @@ public class OrdineResource {
         }
     }
 
-    // Endpoint to update order status
-    @PUT
-    @Path("/{id}/status")
-    public Response updateOrderStatus(@PathParam("id") String id, String status) {
-        Ordine updatedOrder = orderService.updateOrderStatus(new ObjectId(id), status);
-        if (updatedOrder != null) {
-            return Response.ok(updatedOrder).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-    }
 
-    // Endpoint to cancel an order
-    @DELETE
-    @Path("/{id}")
-    public Response cancelOrder(@PathParam("id") String id) {
-        boolean success = orderService.cancelOrder(new ObjectId(id));
-        if (success) {
-            return Response.noContent().build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-    }
 }
