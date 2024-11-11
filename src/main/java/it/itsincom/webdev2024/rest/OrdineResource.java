@@ -89,5 +89,15 @@ public class OrdineResource {
         }
     }
 
+    @PUT
+    @Path("/{id}/status")
+    public Response updateOrderStatus(@PathParam("id") String id) {
+        Ordine updatedOrder = orderService.updateOrderStatus(new ObjectId(id));
+        if (updatedOrder != null) {
+            return Response.ok(updatedOrder).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 
 }
