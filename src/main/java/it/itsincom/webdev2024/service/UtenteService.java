@@ -69,6 +69,12 @@ public class UtenteService {
         return responses;
     }
 
+    public CreateProfileResponse getUtenteById(int id) {
+        CreateProfileResponse response = new CreateProfileResponse();
+        response = utenteRepository.getUtenteById(id);
+        return response;
+    }
+
     private CreateProfileResponse convertToProfileResponse(Utente u) {
         CreateProfileResponse res = new CreateProfileResponse();
         res.setId(u.getId());
