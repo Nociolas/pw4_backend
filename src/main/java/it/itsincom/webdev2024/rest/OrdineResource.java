@@ -100,4 +100,14 @@ public class OrdineResource {
         }
     }
 
+    @DELETE
+    @Path("/{id}")
+    public Response cancelOrder(@PathParam("id") String id) {
+        boolean success = orderService.cancelOrder(new ObjectId(id));
+        if (success) {
+            return Response.noContent().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 }
