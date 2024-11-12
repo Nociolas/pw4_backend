@@ -19,7 +19,7 @@ public class OrdineResource {
         try {
             Ordine createdOrder = ordineService.createOrderFromRequest(orderRequest);
 
-            // Send confirmation email
+            ordineService.sendOrderConfirmationEmail(createdOrder);
 
             return Response.status(Response.Status.CREATED).entity(createdOrder).build();
         } catch (RuntimeException e) {
@@ -74,3 +74,4 @@ public class OrdineResource {
 
 
 }
+    }
