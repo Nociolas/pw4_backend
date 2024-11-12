@@ -69,14 +69,14 @@ public class ProdottoRepository {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO prodotto " +
-                            "(id_prodotto, nome_prodotto, descrizione, prezzo, quantita)" +
-                            " VALUES (?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+                            "(id_prodotto, nome_prodotto, descrizione, prezzo, immagine, quantita)" +
+                            " VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
                 statement.setInt(1, prodotto.getId());
                 statement.setString(2, prodotto.getNome());
                 statement.setString(3, prodotto.getDescrizione());
                 statement.setDouble(4, prodotto.getPrezzo());
-//                statement.setString(6, prodotto.getImmagine());
-               statement.setInt(5, prodotto.getQuantita());
+                statement.setString(5, prodotto.getImmagine());
+               statement.setInt(6, prodotto.getQuantita());
                 statement.executeUpdate();
                 ResultSet generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {

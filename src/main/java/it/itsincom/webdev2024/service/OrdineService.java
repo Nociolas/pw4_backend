@@ -1,10 +1,13 @@
 package it.itsincom.webdev2024.service;
 
+import io.quarkus.mailer.Mail;
+import io.quarkus.mailer.Mailer;
 import it.itsincom.webdev2024.persistence.model.Ordine;
 import it.itsincom.webdev2024.persistence.model.Prodotto;
 import it.itsincom.webdev2024.persistence.repository.OrdineRepository;
 import it.itsincom.webdev2024.persistence.repository.ProdottoRepository;
 import it.itsincom.webdev2024.rest.model.CreateOrderRequest;
+import it.itsincom.webdev2024.rest.model.CreateProfileResponse;
 import it.itsincom.webdev2024.rest.model.ProductOrderRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -21,6 +24,13 @@ public class OrdineService {
 
     @Inject
     ProdottoRepository prodottoRepository;  // Inject ProdottoRepository
+
+    @Inject
+    UtenteService utenteService;
+
+    @Inject
+    Mailer mailer;
+
 
     // Create a new order
 
@@ -97,4 +107,12 @@ public class OrdineService {
     public boolean cancelOrder(ObjectId orderId) {
         return orderRepository.deleteOrder(orderId);
     }
+
+
+    private String getUserEmailById(int userId) {
+        CreateProfileResponse user = utenteService.getUtenteById(userId);
+        return user.getEmail();
+    }
+
+
 }
