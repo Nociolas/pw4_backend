@@ -130,5 +130,21 @@ public class OrdineService {
         }
     }
 
+    public void sendOrderAcceptedEmail(Ordine createdOrder) {
+        String email = getUserEmailById(createdOrder.getIdUtente());
+        String emailSubject = "Ordine Accettato- Ordine #" + createdOrder.getId();
+        StringBuilder emailBody = new StringBuilder();
+        emailBody.append("<h2>Gentile utente,</h2>").append("<p>Il tuo ordine è stato accettato.</p>").append("<p><strong>ID ordine:</strong> ").append(createdOrder.getId()).append("</p>").append("<p><strong>Totale:</strong> ").append(String.format("%.2f", createdOrder.getTotale())).append("</p>").append("<p><strong>Prodotti:</strong></p>").append("<ul>");
+        for (Prodotto prodotto : createdOrder.getProdotti()) {
+            emailBody.append("<li>").append(prodotto.getNome()).append(" | Quantità: ").append(prodotto.getQuantita()).append(" | Prezzo: ").append(String.format("%.2f", prodotto.getPrezzo())).append("</li>");
+        }
+        emailBody.append("</ul>").append("<p>Grazie per aver acquistato da noi!</p>").append("<p>Bacini,</p>").append("<p>XOXO</p>");
+        try {
+            mailer.send(Mail.withHtml(email, emailSubject, emailBody.toString()));
+        } catch (Exception e) {
+            System.err.println("Failed to send order confirmation email: " + e.getMessage());
+        }
+    }
+
 
 }

@@ -41,11 +41,9 @@ public class OrdineResource {
     @PUT
     @Path("/{id}/status")
     public Response updateOrderStatus(@PathParam("id") String id) {
-        // Update the order status
         Ordine updatedOrder = ordineService.updateOrderStatus(new ObjectId(id));
-
         if (updatedOrder != null) {
-
+            ordineService.sendOrderAcceptedEmail(updatedOrder);
             return Response.ok(updatedOrder).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -74,4 +72,3 @@ public class OrdineResource {
 
 
 }
-    }
