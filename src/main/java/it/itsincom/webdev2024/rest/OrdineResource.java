@@ -55,15 +55,13 @@ public class OrdineResource {
     public Response cancelOrder(@PathParam("id") String id) {
         ObjectId orderId = new ObjectId(id);
         Ordine ordine = ordineService.getOrderById(orderId);
-
         if (ordine != null) {
             boolean success = ordineService.cancelOrder(orderId);
             if (success) {
-
+                ordineService.sendOrderRejectedEmail(ordine);
                 return Response.noContent().build();
             } else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("Eliminazione fallita").build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Eliminazione fallita").build();
             }
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("Ordine non trovato").build();
