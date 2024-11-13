@@ -28,7 +28,7 @@ public class OrdineRepository implements PanacheMongoRepositoryBase<Ordine, Obje
     }
 
     // Update order status
-    public Ordine updateOrderStatus(ObjectId orderId) {
+    public Ordine acceptOrder(ObjectId orderId) {
         Ordine ordine = findOrderById(orderId);
         if (ordine != null) {
             ordine.stato = "accettato";
@@ -38,13 +38,13 @@ public class OrdineRepository implements PanacheMongoRepositoryBase<Ordine, Obje
     }
 
     // Delete an order (if required)
-    public boolean deleteOrder(ObjectId orderId) {
+    public Ordine cancelOrder(ObjectId orderId) {
         Ordine ordine = findOrderById(orderId);
         if (ordine != null) {
-            delete(ordine);
-            return true;
+            ordine.stato = "rifiutato";
+            persistOrUpdate(ordine);
         }
-        return false;
+        return ordine;
     }
 
 

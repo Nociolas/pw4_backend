@@ -44,9 +44,9 @@ public class OrdineResource {
     }
 
     @PUT
-    @Path("/{id}/status")
-    public Response updateOrderStatus(@PathParam("id") String id) {
-        Ordine updatedOrder = ordineService.updateOrderStatus(new ObjectId(id));
+    @Path("/{id}/accept")
+    public Response acceptOrder(@PathParam("id") String id) {
+        Ordine updatedOrder = ordineService.acceptOrder(new ObjectId(id));
         if (updatedOrder != null) {
             ordineService.sendOrderAcceptedEmail(updatedOrder);
             return Response.ok(updatedOrder).build();
@@ -55,23 +55,15 @@ public class OrdineResource {
         }
     }
 
-    @DELETE
-    @Path("/{id}")
-    public Response cancelOrder(@PathParam("id") String id) {
-        ObjectId orderId = new ObjectId(id);
-        Ordine ordine = ordineService.getOrderById(orderId);
-        if (ordine != null) {
-            boolean success = ordineService.cancelOrder(orderId);
-            if (success) {
-                ordineService.sendOrderRejectedEmail(ordine);
-                return Response.noContent().build();
-            } else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Eliminazione fallita").build();
-            }
+    @PUT
+    @Path("/{id}/cancel")
+    public Response rejectOrdine(@PathParam("id") String id) {
+        Ordine updatedOrder = ordineService.cancelOrder(new ObjectId(id));
+        if (updatedOrder != null) {
+            ordineService.sendOrderRejectedEmail(updatedOrder);
+            return Response.ok(updatedOrder).build();
         } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("Ordine non trovato").build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-
-
 }
