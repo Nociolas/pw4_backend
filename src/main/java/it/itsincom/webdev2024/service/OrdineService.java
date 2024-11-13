@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,16 +38,48 @@ public class OrdineService {
     }
 
     public Ordine createOrderFromRequest(CreateOrderRequest request) {
+        // Check if the dataRitiro is in the past
+        if (request.getDataRitiro().before(new Date())) {
+            throw new IllegalArgumentException("Non è possibile creare un ordine nel passato.");
+        }
+
+        // Calculate the 10-minute interval before and after the dataRitiro
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(request.getDataRitiro());
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hour < 8 || hour >= 19) {
+            throw new IllegalArgumentException("Gli ordini possono essere ritirati solo tra le 08:00:00 e le 19:00:00.");
+        }
+        calendar.add(Calendar.MINUTE, -10);
+        Date startTime = calendar.getTime();
+        calendar.setTime(request.getDataRitiro());
+        calendar.add(Calendar.MINUTE, 10);
+        Date endTime = calendar.getTime();
+
+        // Retrieve all orders and filter them within the time range
+        List<Ordine> allOrders = orderRepository.getAllOrdini();
+        List<Ordine> conflictingOrders = new ArrayList<>();
+        for (Ordine ordine : allOrders) {
+            if (ordine.getDataRitiro().after(startTime) && ordine.getDataRitiro().before(endTime)) {
+                conflictingOrders.add(ordine);
+            }
+        }
+
+        if (!conflictingOrders.isEmpty()) {
+            throw new IllegalStateException("Non è possibile creare un ordine in questo intervallo di tempo.");
+        }
+
+        // Create and save the new order
         Ordine ordine = new Ordine();
         ordine.setIdUtente(request.getIdUtente());
         ordine.setDataOrdine(new Date());
+        ordine.setDataRitiro(request.getDataRitiro());
         ordine.setStato("in attesa");
 
         List<Prodotto> prodotti = new ArrayList<>();
         double totale = 0;
 
         for (ProductOrderRequest productOrder : request.getProdotti()) {
-
             if (productOrder.getQuantita() == null) {
                 throw new IllegalArgumentException("Quantita is required for product: " + productOrder.getNome());
             }
