@@ -14,17 +14,9 @@ public class OrdineResource {
     @Inject
     OrdineService ordineService;
 
-    @POST
-    public Response createOrder(CreateOrderRequest orderRequest) {
-        try {
-            Ordine createdOrder = ordineService.createOrderFromRequest(orderRequest);
-
-            ordineService.sendOrderConfirmationEmail(createdOrder);
-
-            return Response.status(Response.Status.CREATED).entity(createdOrder).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
+    @GET
+    public Response getAllOrders() {
+        return Response.ok(ordineService.getAllOrders()).build();
     }
 
     @GET
@@ -35,6 +27,19 @@ public class OrdineResource {
             return Response.ok(ordine).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @POST
+    public Response createOrder(CreateOrderRequest orderRequest) {
+        try {
+            Ordine createdOrder = ordineService.createOrderFromRequest(orderRequest);
+
+            ordineService.sendOrderConfirmationEmail(createdOrder);
+
+            return Response.status(Response.Status.CREATED).entity(createdOrder).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 

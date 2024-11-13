@@ -32,7 +32,9 @@ public class OrdineService {
     Mailer mailer;
 
 
-    // Create a new order
+    public List<Ordine> getAllOrders() {
+        return orderRepository.getAllOrdini();
+    }
 
     public Ordine createOrderFromRequest(CreateOrderRequest request) {
         Ordine ordine = new Ordine();

@@ -10,6 +10,10 @@ import java.util.List;
 @ApplicationScoped
 public class OrdineRepository implements PanacheMongoRepositoryBase<Ordine, ObjectId> {
 
+    public List<Ordine> getAllOrdini() {
+        return listAll();
+    }
+
     public Ordine saveOrder(Ordine ordine) {
         this.persist(ordine);
         return ordine;
