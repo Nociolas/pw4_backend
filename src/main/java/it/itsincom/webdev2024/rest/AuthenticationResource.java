@@ -7,6 +7,7 @@ import it.itsincom.webdev2024.rest.model.CreateProfileResponse;
 import it.itsincom.webdev2024.rest.model.CreateUtenteRequest;
 import it.itsincom.webdev2024.rest.model.CreateUtenteResponse;
 import it.itsincom.webdev2024.service.AuthenticationService;
+import it.itsincom.webdev2024.service.SmsService;
 import it.itsincom.webdev2024.service.UtenteService;
 import it.itsincom.webdev2024.service.exception.SessionCreationException;
 import it.itsincom.webdev2024.service.exception.WrongUsernameOrPasswordException;
@@ -23,6 +24,9 @@ public class AuthenticationResource {
 
     @Inject
     Mailer mailer;
+
+    @Inject
+    SmsService smsService;
 
     private final AuthenticationService authenticationService;
     private final UtenteService utenteService;
@@ -42,11 +46,21 @@ public class AuthenticationResource {
         CreateUtenteResponse response = utenteService.createUtente(request);
         String verificationCode = utenteRepository.generateVerificationCode();
         utenteRepository.saveVerificationCode(response.getId(), verificationCode);
-        String email = request.getEmail();
-        try {
-            mailer.send(Mail.withText(email, "Verification Code", "Your verification code is: " + verificationCode));
-        } catch (Exception e) {
-            System.err.println("Failed to send verification email: " + e.getMessage());
+
+        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+            String email = request.getEmail();
+            try {
+                mailer.send(Mail.withText(email, "Verification Code", "Your verification code is: " + verificationCode));
+            } catch (Exception e) {
+                System.err.println("Failed to send verification email: " + e.getMessage());
+            }
+        } else if (request.getTelefono() != null && !request.getTelefono().isEmpty()) {
+            String phoneNumber = request.getTelefono();
+            try {
+                smsService.sendSms(phoneNumber, "Your verification code is: " + verificationCode);
+            } catch (Exception e) {
+                System.err.println("Failed to send verification SMS: " + e.getMessage());
+            }
         }
         return response;
     }
