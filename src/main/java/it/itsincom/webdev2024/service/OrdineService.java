@@ -134,7 +134,7 @@ public class OrdineService {
     }
 
     public void sendOrderConfirmationEmail(Ordine createdOrder) {
-        String email = "samu.diani@gmail.com";
+        String email = "marcos1302mc@gmail.com";
         String emailSubject = "Order Confirmation - Order #" + createdOrder.getId();
         StringBuilder emailBody = new StringBuilder();
         emailBody
