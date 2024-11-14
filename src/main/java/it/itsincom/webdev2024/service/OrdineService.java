@@ -38,25 +38,18 @@ public class OrdineService {
     }
 
     public Ordine createOrderFromRequest(CreateOrderRequest request) {
-        // Check if the dataRitiro is in the past
         if (request.getDataRitiro().before(new Date())) {
             throw new IllegalArgumentException("Non è possibile creare un ordine nel passato.");
         }
 
-        // Calculate the 10-minute interval before and after the dataRitiro
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(request.getDataRitiro());
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour < 8 || hour >= 19) {
-            throw new IllegalArgumentException("Gli ordini possono essere ritirati solo tra le 08:00:00 e le 19:00:00.");
-        }
         calendar.add(Calendar.MINUTE, -10);
         Date startTime = calendar.getTime();
         calendar.setTime(request.getDataRitiro());
         calendar.add(Calendar.MINUTE, 10);
         Date endTime = calendar.getTime();
 
-        // Retrieve all orders and filter them within the time range
         List<Ordine> allOrders = orderRepository.getAllOrdini();
         List<Ordine> conflictingOrders = new ArrayList<>();
         for (Ordine ordine : allOrders) {
@@ -69,12 +62,12 @@ public class OrdineService {
             throw new IllegalStateException("Non è possibile creare un ordine in questo intervallo di tempo.");
         }
 
-        // Create and save the new order
         Ordine ordine = new Ordine();
         ordine.setIdUtente(request.getIdUtente());
         ordine.setDataOrdine(new Date());
         ordine.setDataRitiro(request.getDataRitiro());
         ordine.setStato("in attesa");
+        ordine.setCommento(request.getCommento());
 
         List<Prodotto> prodotti = new ArrayList<>();
         double totale = 0;
@@ -135,19 +128,18 @@ public class OrdineService {
         return orderRepository.cancelOrder(orderId);
     }
 
-
     private String getUserEmailById(int userId) {
         CreateProfileResponse user = utenteService.getUtenteById(userId);
         return user.getEmail();
     }
 
     public void sendOrderConfirmationEmail(Ordine createdOrder) {
-        String email = getUserEmailById(createdOrder.getIdUtente());
+        String email = "samu.diani@gmail.com";
         String emailSubject = "Order Confirmation - Order #" + createdOrder.getId();
         StringBuilder emailBody = new StringBuilder();
         emailBody
-                .append("<h2>Gentile utente,</h2>")
-                .append("<p>Il tuo ordine è appena stato creato.</p>")
+                .append("<h2></h2>")
+                .append("<p>E' appena stato inviato un ordine.</p>")
                 .append("<p><strong>ID ordine:</strong> ")
                 .append(createdOrder.getId())
                 .append("</p>")
@@ -164,13 +156,12 @@ public class OrdineService {
                     .append(prodotto.getQuantita())
                     .append(" | Prezzo: ")
                     .append(String.format("%.2f", prodotto.getPrezzo()))
-                    .append("</li>");
+                    .append("</li>")
+            ;
         }
         emailBody
-                .append("</ul>")
-                .append("<p>Grazie per aver acquistato da noi!</p>")
-                .append("<p>Bacini,</p>")
-                .append("<p>XOXO</p>");
+                .append("<p><strong>Commento:</strong></p>")
+                .append(createdOrder.getCommento());
         try {
             mailer.send(Mail.withHtml(email, emailSubject, emailBody.toString()));
         } catch (Exception e) {
@@ -203,9 +194,7 @@ public class OrdineService {
                     .append("</li>");
         }
         emailBody.append("</ul>")
-                .append("<p>Grazie per aver acquistato da noi!</p>")
-                .append("<p>Bacini,</p>")
-                .append("<p>XOXO</p>");
+                .append("<p>Grazie per aver acquistato da noi!</p>");
         try {
             mailer.send(Mail.withHtml(email, emailSubject, emailBody.toString()));
         } catch (Exception e) {
@@ -238,9 +227,7 @@ public class OrdineService {
         }
         emailBody
                 .append("</ul>")
-                .append("<p>Grazie per aver acquistato da noi!</p>")
-                .append("<p>Bacini,</p>")
-                .append("<p>XOXO</p>");
+                .append("<p>Grazie per aver acquistato da noi!</p>");
         try {
             mailer.send(Mail.withHtml(email, emailSubject, emailBody.toString()));
         } catch (Exception e) {

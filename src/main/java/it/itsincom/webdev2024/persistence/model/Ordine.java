@@ -15,6 +15,7 @@ public class Ordine {
     public double totale;
     public Date dataOrdine;
     public Date dataRitiro;
+    public String commento;
 
     public ObjectId getId() {
         return id;
@@ -70,6 +71,14 @@ public class Ordine {
 
     public void setDataRitiro(Date dataRitiro) {
         this.dataRitiro = dataRitiro;
+    }
+
+    public String getCommento() {
+        return commento;
+    }
+
+    public void setCommento(String commento) {
+        this.commento = commento;
     }
 }
 

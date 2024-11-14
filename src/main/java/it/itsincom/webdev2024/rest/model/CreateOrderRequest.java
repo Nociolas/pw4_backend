@@ -7,6 +7,7 @@ public class CreateOrderRequest {
     private int idUtente;
     private List<ProductOrderRequest> prodotti;
     private Date dataRitiro;
+    private String commento;
 
     public int getIdUtente() {
         return idUtente;
@@ -30,6 +31,14 @@ public class CreateOrderRequest {
 
     public void setDataRitiro(Date dataRitiro) {
         this.dataRitiro = dataRitiro;
+    }
+
+    public String getCommento() {
+        return commento;
+    }
+
+    public void setCommento(String commento) {
+        this.commento = commento;
     }
 }
 
